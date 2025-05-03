@@ -1,0 +1,3 @@
+# Yesterday I...
+
+A quick and easy way to log work for standup, whether that is so you can read it off during the meeting or if you can't remember what yyou did last week
