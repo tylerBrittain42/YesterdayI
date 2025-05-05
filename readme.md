@@ -34,10 +34,6 @@ A quick and easy way to log work for standup, whether that is so you can read it
 - Adding a single task(explicit)
     - *syntax:* ```yi -t <task here>```
     - *example:* ```yi -t implemented unit testing for the model dir```
-- Adding multiple tasks
-    - opt in with flag
-    - *sytanx:* ```yi -m "<task 1>" "<task 2>"```
-    - *example:* ```yi -m "created a database" "updated docs"```
 - Assigning a jira ticket
     - will assume no ticket without flag
     - *sytanx:* ```yi -j a" -t "created a database"```
@@ -48,3 +44,12 @@ Just something simple for now
 - no args should output everything
 
 
+
+## to be done later
+- Adding multiple tasks
+    - opt in with flag
+    - *sytanx:* ```yi -m "<task 1>" "<task 2>"```
+    - *example:* ```yi -m "created a database" "updated docs"```
+    
+# links to check out
+- advice on parsing and testing parsing https://eli.thegreenplace.net/2020/testing-flag-parsing-in-go-programs/
