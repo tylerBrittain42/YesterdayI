@@ -2,6 +2,6 @@ package config
 
 type Config struct {
 	Command    bool
-	Task       string
+	Content    string
 	JiraTicket string
 }
