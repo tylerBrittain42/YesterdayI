@@ -27,10 +27,6 @@ A quick and easy way to log work for standup, whether that is so you can read it
 - tui for now think enter blank line to stop
 - cli: also single line with args
 ## cli input
-- Adding a single task(default)
-    - default usage
-    - *syntax:* ```yi "<task here>"```
-    - *example:* ```yi "implemented unit testing for the model dir"```
 - Adding a single task(explicit)
     - *syntax:* ```yi -t <task here>```
     - *example:* ```yi -t implemented unit testing for the model dir```
@@ -50,6 +46,11 @@ Just something simple for now
     - opt in with flag
     - *sytanx:* ```yi -m "<task 1>" "<task 2>"```
     - *example:* ```yi -m "created a database" "updated docs"```
+- Adding a single task(default)
+    - default usage
+    - *syntax:* ```yi "<task here>"```
+    - *example:* ```yi "implemented unit testing for the model dir"```
+
     
 # links to check out
 - advice on parsing and testing parsing https://eli.thegreenplace.net/2020/testing-flag-parsing-in-go-programs/
