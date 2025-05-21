@@ -8,6 +8,7 @@ import (
 )
 
 func TestAddSingle(t *testing.T) {
+	emptyContentError := errors.New("content has empty value")
 	tests := []struct {
 		testName       string
 		inputContent   string
@@ -16,9 +17,9 @@ func TestAddSingle(t *testing.T) {
 		expectedErr    error
 	}{
 		{"adding valid values", "fixed a bug", "CONFIG-9501", TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", dateCreated: time.Now()}}, nil},
-		{"adding empty content", "", "CONFIG-9501", nil, errors.New("empty content value")},
+		{"adding empty content", "", "CONFIG-9501", nil, emptyContentError},
 		{"adding empty jira", "fixed a bug", "", TaskSlice{{Content: "fixed a bug", JiraTicket: "", dateCreated: time.Now()}}, nil},
-		{"adding empty everything", "", "", nil, errors.New("empty content value")},
+		{"adding empty everything", "", "", nil, emptyContentError},
 	}
 	fmt.Println("TestAdd")
 	for _, tt := range tests {
@@ -44,6 +45,7 @@ func TestAddSingle(t *testing.T) {
 	}
 }
 func TestAddMultiple(t *testing.T) {
+	emptyContentError := errors.New("content has empty value")
 	tests := []struct {
 		testName       string
 		inputContent   string
@@ -52,8 +54,8 @@ func TestAddMultiple(t *testing.T) {
 		expectedOutput TaskSlice
 		expectedErr    error
 	}{
-		{"adding ok value to existing slice", "fixed another issue", "CONFIG-9502", TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", dateCreated: time.Now()}}, TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", dateCreated: time.Now()}, {Content: "fixed another issue", JiraTicket: "CONFIG-9502", dateCreated: time.Now()}}, nil},
-		{"adding missing content to an empty slice", "", "CONFIG-9502", TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", dateCreated: time.Now()}}, nil, errors.New("empty content value")},
+		{"adding value to non-empty slice", "fixed another issue", "CONFIG-9502", TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", dateCreated: time.Now()}}, TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", dateCreated: time.Now()}, {Content: "fixed another issue", JiraTicket: "CONFIG-9502", dateCreated: time.Now()}}, nil},
+		{"adding missing content to non-empty slice", "", "CONFIG-9502", TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", dateCreated: time.Now()}}, nil, emptyContentError},
 	}
 	fmt.Println("TestAddMultiple")
 	for _, tt := range tests {

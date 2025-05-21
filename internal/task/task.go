@@ -1,6 +1,7 @@
 package task
 
 import (
+	"errors"
 	"fmt"
 	"time"
 )
@@ -15,15 +16,23 @@ func (t Task) String() string {
 	return fmt.Sprintf("\"%s\" %s %s", t.Content, t.JiraTicket, t.dateCreated.Format("01/02"))
 }
 
-func newTask(content string, jira string) Task {
-	return Task{Content: content, JiraTicket: jira, dateCreated: time.Now()}
+func newTask(content string, jira string) (Task, error) {
+	if content == "" {
+		return Task{}, errors.New("content has empty value")
+	}
+	return Task{Content: content, JiraTicket: jira, dateCreated: time.Now()}, nil
 
 }
 
 type TaskSlice []Task
 
 func (s *TaskSlice) Add(content string, jira string) error {
-	_ = newTask(content, jira)
+	task, err := newTask(content, jira)
+	if err != nil {
+		return err
+	}
+	*s = append(*s, task)
+
 	return nil
 }
 
