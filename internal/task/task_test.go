@@ -16,9 +16,9 @@ func TestAddSingle(t *testing.T) {
 		expectedOutput TaskSlice
 		expectedErr    error
 	}{
-		{"adding valid values", "fixed a bug", "CONFIG-9501", TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", dateCreated: time.Now()}}, nil},
+		{"adding valid values", "fixed a bug", "CONFIG-9501", TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", DateCreated: time.Now()}}, nil},
 		{"adding empty content", "", "CONFIG-9501", nil, emptyContentError},
-		{"adding empty jira", "fixed a bug", "", TaskSlice{{Content: "fixed a bug", JiraTicket: "", dateCreated: time.Now()}}, nil},
+		{"adding empty jira", "fixed a bug", "", TaskSlice{{Content: "fixed a bug", JiraTicket: "", DateCreated: time.Now()}}, nil},
 		{"adding empty everything", "", "", nil, emptyContentError},
 	}
 	fmt.Println("TestAdd")
@@ -54,8 +54,8 @@ func TestAddMultiple(t *testing.T) {
 		expectedOutput TaskSlice
 		expectedErr    error
 	}{
-		{"adding value to non-empty slice", "fixed another issue", "CONFIG-9502", TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", dateCreated: time.Now()}}, TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", dateCreated: time.Now()}, {Content: "fixed another issue", JiraTicket: "CONFIG-9502", dateCreated: time.Now()}}, nil},
-		{"adding missing content to non-empty slice", "", "CONFIG-9502", TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", dateCreated: time.Now()}}, nil, emptyContentError},
+		{"adding value to non-empty slice", "fixed another issue", "CONFIG-9502", TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", DateCreated: time.Now()}}, TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", DateCreated: time.Now()}, {Content: "fixed another issue", JiraTicket: "CONFIG-9502", DateCreated: time.Now()}}, nil},
+		{"adding missing content to non-empty slice", "", "CONFIG-9502", TaskSlice{{Content: "fixed a bug", JiraTicket: "CONFIG-9501", DateCreated: time.Now()}}, nil, emptyContentError},
 	}
 	fmt.Println("TestAddMultiple")
 	for _, tt := range tests {
@@ -80,8 +80,6 @@ func TestAddMultiple(t *testing.T) {
 	}
 
 }
-
-// func TestGetFromFile(t *testing.T) {}
 
 // Created a comparison bc reflection would always be false due to time.now
 func isEqual(a TaskSlice, b TaskSlice) bool {
