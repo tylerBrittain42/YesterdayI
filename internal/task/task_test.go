@@ -25,7 +25,7 @@ func TestAddSingle(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.testName, func(t *testing.T) {
 			actual := TaskSlice{}
-			err := actual.Add(tt.inputContent, tt.inputJira)
+			err := actual.add(tt.inputContent, tt.inputJira)
 			if tt.expectedErr != nil {
 				if err == nil {
 					t.Errorf("expected error %v, but no error returned", err)
@@ -60,7 +60,7 @@ func TestAddMultiple(t *testing.T) {
 	fmt.Println("TestAddMultiple")
 	for _, tt := range tests {
 		t.Run(tt.testName, func(t *testing.T) {
-			err := tt.inputSlice.Add(tt.inputContent, tt.inputJira)
+			err := tt.inputSlice.add(tt.inputContent, tt.inputJira)
 			if tt.expectedErr != nil {
 				if err == nil {
 					t.Errorf("expected error %v, but no error returned", err)
