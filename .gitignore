@@ -25,3 +25,5 @@ go.work.sum
 .env
 cmd/taskLog.json
 cmd/cli/cli
+cmd/yesterdayI/cli
+cmd/yesterdayI/yesterdayI
