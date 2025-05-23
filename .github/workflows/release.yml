@@ -23,12 +23,14 @@ jobs:
       - name: Build binary
         run: |
           mkdir -p dist
-          GOOS=linux GOARCH=amd64 go build -o dist/myapp main.go
+          go build -o dist/yi cmd/yesterdayI/main.go
+          
+
 
       - name: Create release tag
         id: tagger
         run: |
-          tag="v$(date +'%Y%m%d%H%M%S')"
+          tag="v$(date +'%Y-%m-%d-%H-%M-%S')"
           echo "tag=$tag" >> $GITHUB_OUTPUT
           git tag $tag
           git push origin $tag
