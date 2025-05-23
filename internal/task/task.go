@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"os"
 	"time"
+
+	"github.com/tylerBrittain42/YesterdayI/internal/config"
 )
 
 type Task struct {
@@ -28,7 +30,7 @@ func newTask(content string, jira string) (Task, error) {
 
 type TaskSlice []Task
 
-func (s *TaskSlice) Add(content string, jira string) error {
+func (s *TaskSlice) add(content string, jira string) error {
 	task, err := newTask(content, jira)
 	if err != nil {
 		return err
@@ -38,7 +40,7 @@ func (s *TaskSlice) Add(content string, jira string) error {
 	return nil
 }
 
-func (s *TaskSlice) Save(fName string) error {
+func (s *TaskSlice) save(fName string) error {
 
 	b, err := json.Marshal(s)
 	if err != nil {
@@ -54,17 +56,45 @@ func (s *TaskSlice) Save(fName string) error {
 
 }
 
-func Load(fName string) (TaskSlice, error) {
+func load(fName string) (TaskSlice, error) {
+	_, err := os.Stat(fName)
+	if err != nil {
+		if !os.IsNotExist(err) {
+			return nil, fmt.Errorf("error checking file existence: %w", err)
+		}
+		return TaskSlice{}, nil
+	}
+
 	f, err := os.ReadFile(fName)
 	if err != nil {
 		return nil, fmt.Errorf("unable to load: %w", err)
 	}
 
 	tSlice := TaskSlice{}
+
+	// guard clause bc json.Unmarshal will throw an error if it is given an empty slice
+	if len(f) == 0 {
+		return tSlice, nil
+	}
+
 	err = json.Unmarshal(f, &tSlice)
 	if err != nil {
-		return nil, fmt.Errorf("unable to load: %w", err)
+		return nil, fmt.Errorf("unable to unmarshal: %w", err)
 	}
 	return tSlice, nil
+
+}
+
+func AddTask(fName string, c *config.Config) error {
+
+	tSlice, err := load(fName)
+	if err != nil {
+		return err
+	}
+
+	tSlice.add(c.Content, c.JiraTicket)
+	tSlice.save(fName)
+
+	return nil
 
 }
