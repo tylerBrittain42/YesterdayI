@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"os"
 	"time"
-
-	"github.com/tylerBrittain42/YesterdayI/internal/config"
 )
 
 type Task struct {
@@ -91,89 +89,4 @@ func load(fName string) (TaskSlice, error) {
 	}
 	return tSlice, nil
 
-}
-
-func AddTask(fName string, c *config.Config) error {
-
-	tSlice, err := load(fName)
-	if err != nil {
-		return err
-	}
-
-	tSlice.add(c.Content, c.JiraTicket)
-	tSlice.save(fName)
-
-	return nil
-
-}
-
-func View(fName string, c *config.Config) error {
-	tSlice, err := load(fName)
-	if err != nil {
-		return err
-	}
-	if c.StartTime == "" && c.EndTime == "" && c.SpecificTime == "" {
-		tSlice.viewAll()
-	} else if c.StartTime != "" && c.EndTime == "" && c.SpecificTime == "" {
-		tSlice.viewUntilNow(c)
-	} else if c.StartTime != "" && c.EndTime != "" && c.SpecificTime == "" {
-		tSlice.viewRange()
-	} else if c.StartTime == "" && c.EndTime == "" && c.SpecificTime != "" {
-		tSlice.viewSpecificTime()
-	} else {
-		return errors.New("unsupported combination of flags")
-
-	}
-
-	return nil
-}
-
-func (s *TaskSlice) viewAll() {
-	lastDate := (*s)[0].DateCreated.Format("01/02")
-	fmt.Printf("---%s---\n", lastDate)
-	for _, v := range *s {
-		thisDate := v.DateCreated.Format("01/02")
-		if thisDate != lastDate {
-			lastDate = thisDate
-			fmt.Printf("\n---%s---\n", lastDate)
-		}
-		fmt.Println(v.Pretty())
-
-	}
-}
-func (s *TaskSlice) viewUntilNow(c *config.Config) error {
-	parsedDate, err := time.Parse("01/02", c.StartTime)
-	if err != nil {
-		return fmt.Errorf("unable to parse start date: %w", err)
-	}
-	minDate := time.Date(time.Now().Year(), parsedDate.Month(), parsedDate.Day(), 0, 0, 0, 0, time.Local)
-
-	lastDate := (*s)[0].DateCreated.Format("01/02")
-	first := true
-	for _, v := range *s {
-		thisDate := v.DateCreated.Format("01/02")
-		if v.DateCreated.After(minDate) {
-
-			// weird funkyness to ensure that the first line is not empty
-			if first {
-				first = false
-				fmt.Printf("---%s---\n", thisDate)
-				lastDate = thisDate
-
-			} else if thisDate != lastDate {
-				lastDate = thisDate
-				fmt.Printf("\n---%s---\n", thisDate)
-			}
-			fmt.Println(v.Pretty())
-		}
-	}
-	return nil
-}
-
-func (s *TaskSlice) viewSpecificTime() {
-	return
-}
-
-func (s *TaskSlice) viewRange() {
-	return
 }
