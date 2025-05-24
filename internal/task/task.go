@@ -107,12 +107,23 @@ func AddTask(fName string, c *config.Config) error {
 
 }
 
-func ViewAll(fName string) error {
+func View(fName string, c *config.Config) error {
 	tSlice, err := load(fName)
 	if err != nil {
 		return err
 	}
+	if c.StartTime == "" && c.EndTime == "" && c.SpecificTime == "" {
+		tSlice.viewAll()
+	} else if c.StartTime != "" && c.EndTime == "" && c.SpecificTime == "" {
+		tSlice.viewUntilNow()
+	} else if c.StartTime != "" && c.EndTime != "" && c.SpecificTime == "" {
+		tSlice.viewRange()
+	} else if c.StartTime == "" && c.EndTime == "" && c.SpecificTime != "" {
+		tSlice.viewSpecificTime()
+	} else {
+		return errors.New("unsupported combination of flags")
 
+	}
 	lastDate := tSlice[0].DateCreated.Format("01/02")
 	fmt.Printf("---%s---\n", lastDate)
 	for _, v := range tSlice {
@@ -126,4 +137,18 @@ func ViewAll(fName string) error {
 	}
 
 	return nil
+}
+
+func (s *TaskSlice) viewAll() {
+	return
+}
+
+func (s *TaskSlice) viewSpecificTime() {
+	return
+}
+func (s *TaskSlice) viewUntilNow() {
+	return
+}
+func (s *TaskSlice) viewRange() {
+	return
 }

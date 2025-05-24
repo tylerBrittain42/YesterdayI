@@ -21,6 +21,10 @@ func main() {
 
 	viewCmd := flag.NewFlagSet("view", flag.ExitOnError)
 	viewCmd.StringVar(&conf.Duration, "d", "", "specify a time")
+	viewCmd.StringVar(&conf.StartTime, "start", "", "specify a starting date in 00/00 format")
+	viewCmd.StringVar(&conf.EndTime, "end", "", "specify an ending time in 00/00 format")
+	viewCmd.StringVar(&conf.SpecificTime, "date", "", "specify a day in 00/00 format")
+	viewCmd.BoolVar(&conf.IsJson, "json", false, "will output in json format")
 
 	if len(os.Args) < 2 {
 		fmt.Println("No sub command given")
@@ -39,7 +43,7 @@ func main() {
 
 	case "view":
 		viewCmd.Parse(os.Args[2:])
-		err := task.ViewAll(fileName)
+		err := task.View(fileName, &conf)
 		if err != nil {
 			fmt.Printf("Unable to view tasks: %v\n", err)
 			os.Exit(1)
