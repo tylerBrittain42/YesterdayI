@@ -115,7 +115,7 @@ func View(fName string, c *config.Config) error {
 	if c.StartTime == "" && c.EndTime == "" && c.SpecificTime == "" {
 		tSlice.viewAll()
 	} else if c.StartTime != "" && c.EndTime == "" && c.SpecificTime == "" {
-		tSlice.viewUntilNow()
+		tSlice.viewUntilNow(c)
 	} else if c.StartTime != "" && c.EndTime != "" && c.SpecificTime == "" {
 		tSlice.viewRange()
 	} else if c.StartTime == "" && c.EndTime == "" && c.SpecificTime != "" {
@@ -124,9 +124,14 @@ func View(fName string, c *config.Config) error {
 		return errors.New("unsupported combination of flags")
 
 	}
-	lastDate := tSlice[0].DateCreated.Format("01/02")
+
+	return nil
+}
+
+func (s *TaskSlice) viewAll() {
+	lastDate := (*s)[0].DateCreated.Format("01/02")
 	fmt.Printf("---%s---\n", lastDate)
-	for _, v := range tSlice {
+	for _, v := range *s {
 		thisDate := v.DateCreated.Format("01/02")
 		if thisDate != lastDate {
 			lastDate = thisDate
@@ -135,20 +140,40 @@ func View(fName string, c *config.Config) error {
 		fmt.Println(v.Pretty())
 
 	}
-
-	return nil
 }
+func (s *TaskSlice) viewUntilNow(c *config.Config) error {
+	parsedDate, err := time.Parse("01/02", c.StartTime)
+	if err != nil {
+		return fmt.Errorf("unable to parse start date: %w", err)
+	}
+	minDate := time.Date(time.Now().Year(), parsedDate.Month(), parsedDate.Day(), 0, 0, 0, 0, time.Local)
 
-func (s *TaskSlice) viewAll() {
-	return
+	lastDate := (*s)[0].DateCreated.Format("01/02")
+	first := true
+	for _, v := range *s {
+		thisDate := v.DateCreated.Format("01/02")
+		if v.DateCreated.After(minDate) {
+
+			// weird funkyness to ensure that the first line is not empty
+			if first {
+				first = false
+				fmt.Printf("---%s---\n", thisDate)
+				lastDate = thisDate
+
+			} else if thisDate != lastDate {
+				lastDate = thisDate
+				fmt.Printf("\n---%s---\n", thisDate)
+			}
+			fmt.Println(v.Pretty())
+		}
+	}
+	return nil
 }
 
 func (s *TaskSlice) viewSpecificTime() {
 	return
 }
-func (s *TaskSlice) viewUntilNow() {
-	return
-}
+
 func (s *TaskSlice) viewRange() {
 	return
 }
