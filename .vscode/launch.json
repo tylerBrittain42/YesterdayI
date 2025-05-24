@@ -11,7 +11,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${fileDirname}",
-            "args": ["-t","hi"]
+            "args": ["view","-start","05/23"]
         }
     ]
 }

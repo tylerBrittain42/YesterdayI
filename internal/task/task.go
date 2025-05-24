@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"os"
 	"time"
-
-	"github.com/tylerBrittain42/YesterdayI/internal/config"
 )
 
 type Task struct {
@@ -18,6 +16,14 @@ type Task struct {
 
 func (t Task) String() string {
 	return fmt.Sprintf("\"%s\" %s %s", t.Content, t.JiraTicket, t.DateCreated.Format("01/02"))
+}
+
+func (t Task) Pretty() string {
+	if t.JiraTicket != "" {
+		return fmt.Sprintf("task: %s\nJIRA: %s", t.Content, t.JiraTicket)
+	} else {
+		return fmt.Sprintf("task: %s", t.Content)
+	}
 }
 
 func newTask(content string, jira string) (Task, error) {
@@ -82,19 +88,5 @@ func load(fName string) (TaskSlice, error) {
 		return nil, fmt.Errorf("unable to unmarshal: %w", err)
 	}
 	return tSlice, nil
-
-}
-
-func AddTask(fName string, c *config.Config) error {
-
-	tSlice, err := load(fName)
-	if err != nil {
-		return err
-	}
-
-	tSlice.add(c.Content, c.JiraTicket)
-	tSlice.save(fName)
-
-	return nil
 
 }
