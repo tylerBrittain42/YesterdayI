@@ -20,6 +20,14 @@ func (t Task) String() string {
 	return fmt.Sprintf("\"%s\" %s %s", t.Content, t.JiraTicket, t.DateCreated.Format("01/02"))
 }
 
+func (t Task) Pretty() string {
+	if t.JiraTicket != "" {
+		return fmt.Sprintf("task: %s\nJIRA: %s", t.Content, t.JiraTicket)
+	} else {
+		return fmt.Sprintf("task: %s", t.Content)
+	}
+}
+
 func newTask(content string, jira string) (Task, error) {
 	if content == "" {
 		return Task{}, errors.New("content has empty value")
@@ -97,4 +105,25 @@ func AddTask(fName string, c *config.Config) error {
 
 	return nil
 
+}
+
+func ViewAll(fName string) error {
+	tSlice, err := load(fName)
+	if err != nil {
+		return err
+	}
+
+	lastDate := tSlice[0].DateCreated.Format("01/02")
+	fmt.Printf("---%s---\n", lastDate)
+	for _, v := range tSlice {
+		thisDate := v.DateCreated.Format("01/02")
+		if thisDate != lastDate {
+			lastDate = thisDate
+			fmt.Printf("\n---%s---\n", lastDate)
+		}
+		fmt.Println(v.Pretty())
+
+	}
+
+	return nil
 }

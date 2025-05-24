@@ -39,7 +39,7 @@ func main() {
 
 	case "view":
 		viewCmd.Parse(os.Args[2:])
-		err := view()
+		err := task.ViewAll(fileName)
 		if err != nil {
 			fmt.Printf("Unable to view tasks: %v\n", err)
 			os.Exit(1)
@@ -50,8 +50,4 @@ func main() {
 		os.Exit(1)
 	}
 
-}
-
-func view() error {
-	return nil
 }
