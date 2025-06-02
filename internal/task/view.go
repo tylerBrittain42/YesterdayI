@@ -25,7 +25,10 @@ func View(fName string, c *config.Config) error {
 			return err
 		}
 	} else if c.StartTime != "" && c.EndTime != "" && c.SpecificTime == "" {
-		tSlice.viewRange(c)
+		tSlice, err = tSlice.filterRange(c)
+		if err != nil {
+			return err
+		}
 	} else if c.StartTime == "" && c.EndTime == "" && c.SpecificTime != "" {
 		tSlice.viewSpecificTime(c)
 	} else {
@@ -56,40 +59,26 @@ func (s TaskSlice) filterUntilNow(c *config.Config) (TaskSlice, error) {
 	return filteredSlice, nil
 }
 
-func (s *TaskSlice) viewRange(c *config.Config) error {
+func (s TaskSlice) filterRange(c *config.Config) (TaskSlice, error) {
+	filteredSlice := TaskSlice{}
 	parsedStartDate, err := time.Parse("01/02", c.StartTime)
 	if err != nil {
-		return fmt.Errorf("unable to parse start date: %w", err)
+		return TaskSlice{}, fmt.Errorf("unable to parse start date: %w", err)
 	}
 	minDate := time.Date(time.Now().Year(), parsedStartDate.Month(), parsedStartDate.Day(), 0, 0, 0, 0, time.Local)
 
 	parsedEndDate, err := time.Parse("01/02", c.EndTime)
 	if err != nil {
-		return fmt.Errorf("unable to parse end date: %w", err)
+		return TaskSlice{}, fmt.Errorf("unable to parse end date: %w", err)
 	}
 	maxDate := time.Date(time.Now().Year(), parsedEndDate.Month(), parsedEndDate.Day()+1, 0, 0, 0, 0, time.Local)
 
-	lastDate := (*s)[0].DateCreated.Format("01/02")
-	first := true
-	for _, v := range *s {
-		thisDate := v.DateCreated.Format("01/02")
+	for _, v := range s {
 		if v.DateCreated.After(minDate) && v.DateCreated.Before(maxDate) {
-
-			// weird funkyness to ensure that the first line is not empty
-			if first {
-				first = false
-				fmt.Printf("---%s---\n", thisDate)
-				lastDate = thisDate
-
-			} else if thisDate != lastDate {
-				lastDate = thisDate
-				fmt.Printf("\n---%s---\n", thisDate)
-			}
-			fmt.Println(v.Pretty())
+			filteredSlice = append(filteredSlice, v)
 		}
 	}
-	fmt.Println("done")
-	return nil
+	return filteredSlice, nil
 
 }
 
