@@ -27,3 +27,4 @@ cmd/taskLog.json
 cmd/cli/cli
 cmd/yesterdayI/cli
 cmd/yesterdayI/yesterdayI
+taskLog.json
