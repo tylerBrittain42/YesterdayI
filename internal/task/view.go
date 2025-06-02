@@ -17,7 +17,6 @@ func View(fName string, c *config.Config) error {
 		return fmt.Errorf("no entries found")
 	}
 
-	// New idea: filter out curSlice then call pretty print at the end
 	if c.StartTime == "" && c.EndTime == "" && c.SpecificTime == "" {
 	} else if c.StartTime != "" && c.EndTime == "" && c.SpecificTime == "" {
 		tSlice, err = tSlice.filterUntilNow(c)
@@ -30,7 +29,10 @@ func View(fName string, c *config.Config) error {
 			return err
 		}
 	} else if c.StartTime == "" && c.EndTime == "" && c.SpecificTime != "" {
-		tSlice.viewSpecificTime(c)
+		tSlice, err = tSlice.filterSpecificTime(c)
+		if err != nil {
+			return err
+		}
 	} else {
 		return errors.New("unsupported combination of flags")
 
@@ -82,19 +84,19 @@ func (s TaskSlice) filterRange(c *config.Config) (TaskSlice, error) {
 
 }
 
-func (s *TaskSlice) viewSpecificTime(c *config.Config) error {
+func (s TaskSlice) filterSpecificTime(c *config.Config) (TaskSlice, error) {
+	filteredSlice := TaskSlice{}
 	parsedDate, err := time.Parse("01/02", c.SpecificTime)
 	if err != nil {
-		return fmt.Errorf("unable to parse specific date: %w", err)
+		return TaskSlice{}, fmt.Errorf("unable to parse specific date: %w", err)
 	}
 
-	fmt.Printf("---%s---\n", parsedDate.Format("01/02"))
-	for _, v := range *s {
+	for _, v := range s {
 		if v.DateCreated.Month() == parsedDate.Month() && v.DateCreated.Day() == parsedDate.Day() {
-			fmt.Println(v.Pretty())
+			filteredSlice = append(filteredSlice, v)
 		}
 	}
-	return nil
+	return filteredSlice, nil
 
 }
 
@@ -103,7 +105,6 @@ func printOutput(s TaskSlice) error {
 	prettyCurDate := prettyDate(curDate)
 	fmt.Printf("---%s---\n", prettyCurDate)
 	for _, v := range s {
-		// a new date occurs
 		if v.DateCreated.Month() != curDate.Month() || v.DateCreated.Day() != curDate.Day() {
 			curDate = v.DateCreated
 			prettyCurDate = prettyDate(curDate)
