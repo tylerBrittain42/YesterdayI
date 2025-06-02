@@ -20,7 +20,10 @@ func View(fName string, c *config.Config) error {
 	// New idea: filter out curSlice then call pretty print at the end
 	if c.StartTime == "" && c.EndTime == "" && c.SpecificTime == "" {
 	} else if c.StartTime != "" && c.EndTime == "" && c.SpecificTime == "" {
-		tSlice.viewUntilNow(c)
+		tSlice, err = tSlice.filterUntilNow(c)
+		if err != nil {
+			return err
+		}
 	} else if c.StartTime != "" && c.EndTime != "" && c.SpecificTime == "" {
 		tSlice.viewRange(c)
 	} else if c.StartTime == "" && c.EndTime == "" && c.SpecificTime != "" {
@@ -38,33 +41,19 @@ func View(fName string, c *config.Config) error {
 	return nil
 }
 
-func (s *TaskSlice) viewUntilNow(c *config.Config) error {
+func (s TaskSlice) filterUntilNow(c *config.Config) (TaskSlice, error) {
+	filteredSlice := TaskSlice{}
 	parsedDate, err := time.Parse("01/02", c.StartTime)
 	if err != nil {
-		return fmt.Errorf("unable to parse start date: %w", err)
+		return TaskSlice{}, fmt.Errorf("unable to parse start date: %w", err)
 	}
 	minDate := time.Date(time.Now().Year(), parsedDate.Month(), parsedDate.Day(), 0, 0, 0, 0, time.Local)
-
-	lastDate := (*s)[0].DateCreated.Format("01/02")
-	first := true
-	for _, v := range *s {
-		thisDate := v.DateCreated.Format("01/02")
+	for _, v := range s {
 		if v.DateCreated.After(minDate) {
-
-			// weird funkyness to ensure that the first line is not empty
-			if first {
-				first = false
-				fmt.Printf("---%s---\n", thisDate)
-				lastDate = thisDate
-
-			} else if thisDate != lastDate {
-				lastDate = thisDate
-				fmt.Printf("\n---%s---\n", thisDate)
-			}
-			fmt.Println(v.Pretty())
+			filteredSlice = append(filteredSlice, v)
 		}
 	}
-	return nil
+	return filteredSlice, nil
 }
 
 func (s *TaskSlice) viewRange(c *config.Config) error {
