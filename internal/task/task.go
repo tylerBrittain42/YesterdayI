@@ -20,9 +20,9 @@ func (t Task) String() string {
 
 func (t Task) Pretty() string {
 	if t.JiraTicket != "" {
-		return fmt.Sprintf("task: %s\nJIRA: %s", t.Content, t.JiraTicket)
+		return fmt.Sprintf("task: %s\nJIRA: %s\n", t.Content, t.JiraTicket)
 	} else {
-		return fmt.Sprintf("task: %s", t.Content)
+		return fmt.Sprintf("task: %s\n", t.Content)
 	}
 }
 
