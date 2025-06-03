@@ -11,8 +11,15 @@ func AddTask(fName string, c *config.Config) error {
 		return err
 	}
 
-	tSlice.add(c.Content, c.JiraTicket)
-	tSlice.save(fName)
+	err = tSlice.add(c.Content, c.JiraTicket)
+	if err != nil {
+		return err
+	}
+
+	err = tSlice.save(fName)
+	if err != nil {
+		return err
+	}
 
 	return nil
 

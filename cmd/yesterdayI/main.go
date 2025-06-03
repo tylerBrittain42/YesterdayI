@@ -4,14 +4,21 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/tylerBrittain42/YesterdayI/internal/config"
 	"github.com/tylerBrittain42/YesterdayI/internal/task"
 )
 
-const fileName = "taskLog.json"
-
 func main() {
+
+	fileName := ".yi.json"
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	fileName = filepath.Join(homeDir, fileName)
 
 	var conf config.Config
 
