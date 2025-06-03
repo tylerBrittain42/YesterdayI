@@ -20,7 +20,6 @@ func main() {
 	addCmd.StringVar(&conf.JiraTicket, "j", "", "optional jira ticket")
 
 	viewCmd := flag.NewFlagSet("view", flag.ExitOnError)
-	viewCmd.StringVar(&conf.Duration, "d", "", "specify a time")
 	viewCmd.StringVar(&conf.StartTime, "start", "", "specify a starting date in 00/00 format")
 	viewCmd.StringVar(&conf.EndTime, "end", "", "specify an inclusive ending time in 00/00 format")
 	viewCmd.StringVar(&conf.SpecificTime, "date", "", "specify a day in 00/00 format")
