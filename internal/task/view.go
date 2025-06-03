@@ -1,6 +1,7 @@
 package task
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -37,11 +38,18 @@ func View(fName string, c *config.Config) error {
 		return errors.New("unsupported combination of flags")
 
 	}
-	err = printOutput(tSlice)
-	if err != nil {
-		return fmt.Errorf("unable to print output: %w", err)
+	if c.IsJson {
+		b, err := json.Marshal(tSlice)
+		if err != nil {
+			return fmt.Errorf("unable to marshal to json: %w", err)
+		}
+		fmt.Println(string(b))
+	} else {
+		err = printOutput(tSlice)
+		if err != nil {
+			return fmt.Errorf("unable to print output: %w", err)
+		}
 	}
-	fmt.Println("done")
 
 	return nil
 }
