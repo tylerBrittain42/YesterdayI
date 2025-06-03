@@ -2,55 +2,29 @@
 
 A quick and easy way to log work for standup, whether that is so you can read it off during the meeting or if you can't remember what yyou did last week
 
-# Ideas
-## Adding data
-- should have long form to log whole day
-- should have short form to log single item
-- should include date of logging(can allow override to date minus 1 or custom)
-## Should be able to view data
-- views should include:
-    - today
-    - yesterday
-    - yesterday + today
-    - all days
-## edit
-- use view window and multiple choice to select option to override
-## delete 
-- use view window and multiple choice to select option to override
-
-# Other libraries
-- mostly standard lib
-- consider charm when we get to edit and delete
-
-# User input
-- use yi as command
-- tui for now think enter blank line to stop
-- cli: also single line with args
-## cli input
-- Adding a single task(explicit)
-    - *syntax:* ```yi -t <task here>```
-    - *example:* ```yi -t implemented unit testing for the model dir```
-- Assigning a jira ticket
+# cli usage
+The cli consists of two commands, `add` and `view`.
+the flag `-help` can be used for each subcommand
+# add
+The `add` subcommand is used to add tasks. 
+- `-t` is required and is used to store the task
+- `-j` is optional and is used for a jira ticket or whatever other sort of category you wish.
+## Examples
+ - Adding a single task without a flag
+    - *syntax:* ```yi -t '<task here>'```
+    - *example:* ```yi -t 'implemented unit testing for the model dir'```
+- Adding a single task with a jira flag
     - will assume no ticket without flag
-    - *sytanx:* ```yi -j a" -t "created a database"```
-    - *example:* ```yi -j "CONFIG-1234" -t "created a database"```
-
-## cli output
-Just something simple for now
-- no args should output everything
+    - *syntax:* ```yi -t '<task here>' -j '<jira here>'```
+    - *syntax:* ```yi -t 'implemented testing' -j 'config-2159'```
 
 
+## view
+The `view` subcommand is used to view tasks. No flags(or only json flag) will print all tasks.
+- `-json` will provide the output in json form. This can be used in combination with any of the other flags.
+- `-start` will provide a start date. It can be used in tandem with `-end`. If no end date is specified it will show the range from `start` until now.
+- `-end` will provide an end date. It requires the `start` flag to be used.
+- `-date` will only print tasks of a specific date.
 
-## to be done later
-- Adding multiple tasks
-    - opt in with flag
-    - *sytanx:* ```yi -m "<task 1>" "<task 2>"```
-    - *example:* ```yi -m "created a database" "updated docs"```
-- Adding a single task(default)
-    - default usage
-    - *syntax:* ```yi "<task here>"```
-    - *example:* ```yi "implemented unit testing for the model dir"```
+*Note: all dates must use the form 'xx/xx, example: 01/02.*
 
-    
-# links to check out
-- advice on parsing and testing parsing https://eli.thegreenplace.net/2020/testing-flag-parsing-in-go-programs/
