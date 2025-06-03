@@ -101,6 +101,10 @@ func (s TaskSlice) filterSpecificTime(c *config.Config) (TaskSlice, error) {
 }
 
 func printOutput(s TaskSlice) error {
+	if len(s) == 0 {
+		fmt.Printf("no entries found for the given criteria\n")
+		return nil
+	}
 	curDate := s[0].DateCreated
 	prettyCurDate := prettyDate(curDate)
 	fmt.Printf("---%s---\n", prettyCurDate)
